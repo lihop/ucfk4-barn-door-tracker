@@ -1,41 +1,66 @@
 # File:   Makefile
 # Author: Leroy Hopson 
-# Date:   4 Jan 2015
-# Descr:  Makefile for barn door tracker
+# Date:   5 Jan 2015 
+# Descr:  Makefile for tracker 
 
 # Definitions.
 CC = avr-gcc
-CFLAGS = -mmcu=atmega32u2 -Os -Wall -Wstrict-prototypes -Wextra -g -I. -I../../utils -I../../fonts -I../../drivers -I../../drivers/avr
+CFLAGS = -mmcu=atmega32u2 -Os -Wall -Wstrict-prototypes -Wextra -g -I../../drivers/avr -I../../fonts -I../../drivers -I../../utils
 OBJCOPY = avr-objcopy
 SIZE = avr-size
 DEL = rm
 
 
 # Default target.
-all: main.out
+all: tracker.out
 
 
 # Compile: create object files from C source files.
-main.o: main.c ../../drivers/avr/system.h
+tracker.o: tracker.c ../../drivers/avr/system.h ../../drivers/avr/timer.h ../../drivers/button.h ../../drivers/display.h ../../fonts/font3x5_1.h ../../utils/font.h ../../utils/task.h ../../utils/tinygl.h stepper.h
+	$(CC) -c $(CFLAGS) $< -o $@
+
+pio.o: ../../drivers/avr/pio.c ../../drivers/avr/pio.h ../../drivers/avr/system.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 system.o: ../../drivers/avr/system.c ../../drivers/avr/system.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
-stepper.o: ./stepper.c ./stepper.h
-	$(CC) -c $(CFLAGS) $< -o $@
-
 timer.o: ../../drivers/avr/timer.c ../../drivers/avr/system.h ../../drivers/avr/timer.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
-pacer.o: ../../utils/pacer.c ../../drivers/avr/system.h ../../drivers/avr/timer.h ../../utils/pacer.h
+button.o: ../../drivers/button.c ../../drivers/avr/pio.h ../../drivers/avr/system.h ../../drivers/button.h
+	$(CC) -c $(CFLAGS) $< -o $@
+
+display.o: ../../drivers/display.c ../../drivers/avr/system.h ../../drivers/display.h ../../drivers/ledmat.h
+	$(CC) -c $(CFLAGS) $< -o $@
+
+ledmat.o: ../../drivers/ledmat.c ../../drivers/avr/pio.h ../../drivers/avr/system.h ../../drivers/ledmat.h
+	$(CC) -c $(CFLAGS) $< -o $@
+
+font.o: ../../utils/font.c ../../drivers/avr/system.h ../../utils/font.h
+	$(CC) -c $(CFLAGS) $< -o $@
+
+task.o: ../../utils/task.c ../../drivers/avr/system.h ../../drivers/avr/timer.h ../../utils/task.h
+	$(CC) -c $(CFLAGS) $< -o $@
+
+tinygl.o: ../../utils/tinygl.c ../../drivers/avr/system.h ../../drivers/display.h ../../utils/font.h ../../utils/tinygl.h
+	$(CC) -c $(CFLAGS) $< -o $@
+
+stepper.o: stepper.c stepper.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 
-# Link: create ELF output file from object files.
-main.out: main.o system.o stepper.o timer.o pacer.o
+
+
+# Link: create output file (executable) from object files.
+tracker.out: tracker.o pio.o system.o timer.o button.o display.o ledmat.o font.o task.o tinygl.o stepper.o
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 	$(SIZE) $@
+
+
+# Create hex file for programming from executable file.
+tracker.hex: tracker.out
+	$(OBJCOPY) -O ihex tracker.out tracker.hex
 
 
 # Target: clean project.
@@ -46,8 +71,7 @@ clean:
 
 # Target: program project.
 .PHONY: program
-program: main.out
-	$(OBJCOPY) -O ihex main.out main.hex
-	dfu-programmer atmega32u2 erase; dfu-programmer atmega32u2 flash main.hex; dfu-programmer atmega32u2 start
+program: tracker.hex
+	dfu-programmer atmega32u2 erase; dfu-programmer atmega32u2 flash tracker.hex; dfu-programmer atmega32u2 start
 
 
