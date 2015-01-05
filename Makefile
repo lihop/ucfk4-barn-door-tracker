@@ -16,7 +16,7 @@ all: tracker.out
 
 
 # Compile: create object files from C source files.
-tracker.o: tracker.c ../../drivers/avr/system.h ../../drivers/avr/timer.h ../../drivers/button.h ../../drivers/display.h ../../fonts/font3x5_1.h ../../utils/font.h ../../utils/task.h ../../utils/tinygl.h stepper.h
+tracker.o: tracker.c ../../drivers/avr/system.h ../../drivers/avr/timer.h ../../drivers/navswitch.h ../../drivers/display.h ../../fonts/font3x5_1.h ../../utils/font.h ../../utils/task.h ../../utils/tinygl.h stepper.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 pio.o: ../../drivers/avr/pio.c ../../drivers/avr/pio.h ../../drivers/avr/system.h
@@ -28,7 +28,7 @@ system.o: ../../drivers/avr/system.c ../../drivers/avr/system.h
 timer.o: ../../drivers/avr/timer.c ../../drivers/avr/system.h ../../drivers/avr/timer.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
-button.o: ../../drivers/button.c ../../drivers/avr/pio.h ../../drivers/avr/system.h ../../drivers/button.h
+navswitch.o: ../../drivers/navswitch.c ../../drivers/avr/pio.h ../../drivers/avr/system.h ../../drivers/navswitch.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 display.o: ../../drivers/display.c ../../drivers/avr/system.h ../../drivers/display.h ../../drivers/ledmat.h
@@ -53,7 +53,7 @@ stepper.o: stepper.c stepper.h
 
 
 # Link: create output file (executable) from object files.
-tracker.out: tracker.o pio.o system.o timer.o button.o display.o ledmat.o font.o task.o tinygl.o stepper.o
+tracker.out: tracker.o pio.o system.o timer.o navswitch.o display.o ledmat.o font.o task.o tinygl.o stepper.o
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 	$(SIZE) $@
 
