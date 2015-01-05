@@ -45,3 +45,12 @@ sudo apt-get install git gcc-avr binutils-avr avr-libc dfu-programmer
   cd ucfk4-barn-door-tracker
   make program
   ```
+
+Using the tracker
+-----------------
+* The LED matrix on the UCFK4 displays the time (in minutes) that the tracker will run for.
+
+* Use navswitch left/right to adjust the time.
+
+* Press the navswitch to start tracking. The LED matrix will display a countdown.
+
