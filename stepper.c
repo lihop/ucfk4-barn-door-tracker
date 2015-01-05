@@ -2,7 +2,7 @@
 
 typedef struct stepper_state_struct
 {
-    uint8_t step_number; // which step in a full revolution the motor is on
+    uint16_t step_number; // which step in a full revolution the motor is on
     stepper_direction_t direction; // direction of rotation
     uint16_t number_of_steps; // total number of steps this motor can take
     pio_t motor_pin_1;
@@ -99,7 +99,7 @@ void stepper_step (void)
 }
 
 /* Initialise things */
-void stepper_init (uint8_t number_of_steps, pio_t motor_pin_1,
+void stepper_init (uint16_t number_of_steps, pio_t motor_pin_1,
     pio_t motor_pin_2, pio_t motor_pin_3, pio_t motor_pin_4)
 {
     stepper.number_of_steps = number_of_steps;

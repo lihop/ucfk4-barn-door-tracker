@@ -24,7 +24,7 @@ void stepper_step (void);
 void stepper_direction_set (stepper_direction_t direction);
 
 /* Initialise the stepper motor */
-void stepper_init (uint8_t number_of_steps, pio_t motor_pin_1,
+void stepper_init (uint16_t number_of_steps, pio_t motor_pin_1,
     pio_t motor_pin_2, pio_t motor_pin_3, pio_t motor_pin_4);
 
 #endif
